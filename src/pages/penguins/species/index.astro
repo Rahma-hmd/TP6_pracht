@@ -1,0 +1,35 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import penguins from "../../../assets/penguins.json";
+
+const species = [...new Set(penguins.map((penguin) => penguin.species))];
+---
+
+<Layout>
+    <main class="min-h-screen bg-[#b0c4de] px-6 py-10">
+        <div class="max-w-5xl mx-auto">
+            <a href="/" class="font-semibold"> ← Retour à l'accueil </a>
+
+            <h1 class="text-4xl font-bold mt-6 mb-3">Espèces de Penguins</h1>
+
+            <p class="mb-8">
+                Choisissez une espèce pour afficher son graphique.
+            </p>
+
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="flex flex-wrap gap-4">
+                    {
+                        species.map((specie) => (
+                            <a
+                                href={`/penguins/species/${specie}/`}
+                                class="btn btn-primary"
+                            >
+                                {specie}
+                            </a>
+                        ))
+                    }
+                </div>
+            </div>
+        </div>
+    </main>
+</Layout>

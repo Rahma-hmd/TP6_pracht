@@ -1,0 +1,65 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import penguins from "../../../assets/penguins.json";
+import PlotFigure from "../../../components/PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+
+export function getStaticPaths() {
+    const species = [...new Set(penguins.map((penguin) => penguin.species))];
+
+    return species.map((specie) => ({
+        params: {
+            species: specie,
+        },
+    }));
+}
+
+const { species } = Astro.params;
+
+const filteredPenguins = penguins.filter(
+    (penguin) => penguin.species === species,
+);
+
+const plotOptions = {
+    grid: true,
+
+    marks: [
+        Plot.dot(filteredPenguins, {
+            x: "culmen_length_mm",
+            y: "culmen_depth_mm",
+            fill: "species",
+            r: 5,
+        }),
+    ],
+
+    x: {
+        label: "Longueur du bec (mm)",
+    },
+
+    y: {
+        label: "Profondeur du bec (mm)",
+    },
+
+    title: `Penguins - ${species}`,
+};
+---
+
+<Layout>
+    <main class="min-h-screen bg-[#b0c4de] px-6 py-10">
+        <div class="max-w-5xl mx-auto">
+            <a href="/penguins/species/"> ← Retour aux espèces </a>
+
+            <h1 class="text-4xl font-bold mt-6 mb-3">
+                Espèce : {species}
+            </h1>
+
+            <p class="mb-6">
+                {filteredPenguins.length} penguin(s)
+            </p>
+
+            <div class="bg-white rounded-xl p-6 shadow-md">
+                <PlotFigure options={plotOptions} />
+            </div>
+        </div>
+    </main>
+</Layout>

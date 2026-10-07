@@ -1,21 +1,117 @@
 ---
-import PlotFigure from "../components/PlotFigure.astro";
 import Layout from "../layouts/Layout.astro";
-import * as Plot from "@observablehq/plot";
-import penguins from "../assets/penguins.json";
 ---
 
 <Layout>
-  <h1 class="text-2xl">Test Astro et Plot (Observablehq)</h1>
-  <PlotFigure
-    options={{
-      marks: [
-        Plot.dot(penguins, {
-          x: "culmen_length_mm",
-          y: "culmen_depth_mm",
-          stroke: "species",
-        }),
-      ],
-    }}
-  />
+  <main
+    class="min-h-screen bg-[#b0c4de] px-6 py-10"
+    style="font-family: 'Montserrat', sans-serif;"
+  >
+    <div class="max-w-5xl mx-auto">
+      <!-- NAVBAR -->
+      <nav
+        class="flex items-center justify-between
+               bg-white rounded-2xl px-6 py-4
+               shadow-sm mb-12"
+      >
+        <a href="/" class="text-2xl font-extrabold"> DataViz </a>
+
+        <div class="flex gap-2">
+          <a href="/cars/year/" class="btn btn-ghost btn-sm"> Cars </a>
+
+          <a href="/penguins/species/" class="btn btn-ghost btn-sm">
+            Penguins
+          </a>
+        </div>
+      </nav>
+
+      <!-- INTRO -->
+      <section class="mb-10">
+        <p
+          class="text-sm font-bold uppercase
+                 tracking-widest text-base-content/60 mb-3"
+        >
+          TP6
+        </p>
+
+        <h1 class="text-4xl md:text-5xl
+                 font-extrabold mb-4">
+          Routes dynamiques avec Astro
+        </h1>
+
+        <p
+          class="text-base md:text-lg
+                 text-base-content/70 max-w-2xl"
+        >
+          Explorez les données Cars et Penguins grâce à des pages générées
+          automatiquement à partir des paramètres d’URL.
+        </p>
+      </section>
+
+      <!-- CARTES -->
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- CARS -->
+        <a
+          href="/cars/year/"
+          class="group bg-white rounded-2xl
+                 border border-base-300
+                 p-7 shadow-md
+                 hover:shadow-xl
+                 hover:-translate-y-1
+                 transition-all"
+        >
+          <div class="flex items-center justify-between mb-8">
+            <span class="badge badge-outline"> Cars </span>
+
+            <span class="text-3xl"> 🚗 </span>
+          </div>
+
+          <h2 class="text-2xl font-bold mb-3">Voitures par année</h2>
+
+          <p class="text-base-content/65 mb-8">
+            Choisissez une année et visualisez les voitures correspondantes.
+          </p>
+
+          <div
+            class="font-bold
+                   group-hover:translate-x-1
+                   transition-transform"
+          >
+            Explorer →
+          </div>
+        </a>
+
+        <!-- PENGUINS -->
+        <a
+          href="/penguins/species/"
+          class="group bg-white rounded-2xl
+                 border border-base-300
+                 p-7 shadow-md
+                 hover:shadow-xl
+                 hover:-translate-y-1
+                 transition-all"
+        >
+          <div class="flex items-center justify-between mb-8">
+            <span class="badge badge-outline"> Penguins </span>
+
+            <span class="text-3xl"> 🐧 </span>
+          </div>
+
+          <h2 class="text-2xl font-bold mb-3">Penguins par espèce</h2>
+
+          <p class="text-base-content/65 mb-8">
+            Choisissez une espèce et affichez uniquement les données associées.
+          </p>
+
+          <div
+            class="font-bold
+                   group-hover:translate-x-1
+                   transition-transform"
+          >
+            Explorer →
+          </div>
+        </a>
+      </section>
+    </div>
+  </main>
 </Layout>

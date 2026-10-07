@@ -1,0 +1,37 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import cars from "../../../assets/cars.json";
+
+const years = [...new Set(cars.map((car) => car.Year.slice(0, 4)))].sort();
+---
+
+<Layout>
+    <main class="min-h-screen bg-[#b0c4de] px-6 py-10">
+        <div class="max-w-5xl mx-auto">
+            <a href="/" class="font-semibold"> ← Retour à l'accueil </a>
+
+            <h1 class="text-4xl font-bold mt-6 mb-3">Voitures par année</h1>
+
+            <p class="mb-8">
+                Choisissez une année pour afficher les voitures correspondantes.
+            </p>
+
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <ul class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {
+                        years.map((year) => (
+                            <li>
+                                <a
+                                    href={`/cars/year/${year}/`}
+                                    class="btn btn-outline w-full"
+                                >
+                                    {year}
+                                </a>
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
+        </div>
+    </main>
+</Layout>
