@@ -1,0 +1,238 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PlotFigure from "../../components/PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+import penguins from "../../assets/penguins.json";
+
+const species = [...new Set(penguins.map((penguin) => penguin.species))];
+
+const speciesData = species.map((specie) => {
+    const filteredPenguins = penguins.filter(
+        (penguin) => penguin.species === specie,
+    );
+
+    const validPenguins = filteredPenguins.filter(
+        (penguin) =>
+            penguin.culmen_length_mm != null && penguin.culmen_depth_mm != null,
+    );
+
+    const options = {
+        grid: true,
+
+        marks: [
+            Plot.dot(validPenguins, {
+                x: "culmen_length_mm",
+                y: "culmen_depth_mm",
+                fill: "species",
+                r: 5,
+                fillOpacity: 0.8,
+            }),
+        ],
+
+        x: {
+            label: "Longueur du bec (mm)",
+        },
+
+        y: {
+            label: "Profondeur du bec (mm)",
+        },
+
+        color: {
+            legend: true,
+        },
+
+        title: `Espèce : ${specie}`,
+    };
+
+    return {
+        specie,
+        filteredPenguins,
+        options,
+    };
+});
+---
+
+<Layout>
+    <main class="min-h-screen bg-[#b0c4de] px-6 py-10">
+        <div class="max-w-5xl mx-auto">
+            <!-- RETOUR -->
+            <a href="/" class="font-semibold"> ← Retour à l'accueil </a>
+
+            <!-- TITRE -->
+            <section class="mt-6 mb-10">
+                <p
+                    class="text-sm font-bold uppercase tracking-widest
+                 text-base-content/60 mb-2"
+                >
+                    Dataset Penguins
+                </p>
+
+                <h1 class="text-4xl font-extrabold mb-3">Penguins</h1>
+
+                <p class="text-base-content/70 max-w-2xl">
+                    Explorez les données des Penguins par espèce, par île ou par
+                    sexe.
+                </p>
+            </section>
+
+            <!-- NAVIGATION -->
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+                <!-- ESPECES -->
+                <a
+                    href="/penguins/species/"
+                    class="bg-white rounded-2xl p-5 shadow-md
+                 border border-base-300
+                 hover:shadow-lg hover:-translate-y-1
+                 transition-all"
+                >
+                    <p class="text-sm font-bold text-base-content/50 mb-2">
+                        FILTRE
+                    </p>
+
+                    <h2 class="text-xl font-bold mb-2">Par espèce</h2>
+
+                    <p class="text-sm text-base-content/70">
+                        Adelie, Chinstrap et Gentoo
+                    </p>
+
+                    <p class="font-bold mt-5">Explorer →</p>
+                </a>
+
+                <!-- ILES -->
+                <a
+                    href="/penguins/island/"
+                    class="bg-white rounded-2xl p-5 shadow-md
+                 border border-base-300
+                 hover:shadow-lg hover:-translate-y-1
+                 transition-all"
+                >
+                    <p class="text-sm font-bold text-base-content/50 mb-2">
+                        FILTRE
+                    </p>
+
+                    <h2 class="text-xl font-bold mb-2">Par île</h2>
+
+                    <p class="text-sm text-base-content/70">
+                        Biscoe, Dream et Torgersen
+                    </p>
+
+                    <p class="font-bold mt-5">Explorer →</p>
+                </a>
+
+                <!-- SEXE -->
+                <a
+                    href="/penguins/sex/"
+                    class="bg-white rounded-2xl p-5 shadow-md
+                 border border-base-300
+                 hover:shadow-lg hover:-translate-y-1
+                 transition-all"
+                >
+                    <p class="text-sm font-bold text-base-content/50 mb-2">
+                        FILTRE
+                    </p>
+
+                    <h2 class="text-xl font-bold mb-2">Par sexe</h2>
+
+                    <p class="text-sm text-base-content/70">Male et Female</p>
+
+                    <p class="font-bold mt-5">Explorer →</p>
+                </a>
+            </section>
+
+            <!-- GRAPHIQUES -->
+            <section>
+                <h2 class="text-2xl font-bold mb-2">Comparaison des espèces</h2>
+
+                <p class="text-base-content/70 mb-6">
+                    Sélectionnez une espèce pour afficher son graphique.
+                </p>
+
+                <!-- ONGLETS -->
+                <div class="flex flex-wrap gap-3 mb-6">
+                    {
+                        speciesData.map((item, index) => (
+                            <button
+                                type="button"
+                                class={`tab-button btn ${
+                                    index === 0 ? "btn-primary" : "btn-outline"
+                                }`}
+                                data-species={item.specie}
+                            >
+                                {item.specie}
+                            </button>
+                        ))
+                    }
+                </div>
+
+                <!-- CONTENU DES ONGLETS -->
+                {
+                    speciesData.map((item, index) => (
+                        <div
+                            class={`species-panel bg-white rounded-2xl
+                      shadow-md border border-base-300 p-6
+                      ${index === 0 ? "" : "hidden"}`}
+                            data-panel={item.specie}
+                        >
+                            <div class="mb-5">
+                                <h3 class="text-2xl font-bold">
+                                    {item.specie}
+                                </h3>
+
+                                <p class="text-base-content/70">
+                                    {item.filteredPenguins.length} penguin(s)
+                                </p>
+                            </div>
+
+                            <div class="overflow-x-auto">
+                                <PlotFigure options={item.options} />
+                            </div>
+
+                            <div class="mt-6">
+                                <a
+                                    href={`/penguins/species/${item.specie}/`}
+                                    class="btn btn-outline btn-sm"
+                                >
+                                    Voir la page {item.specie}
+                                </a>
+                            </div>
+                        </div>
+                    ))
+                }
+            </section>
+        </div>
+    </main>
+</Layout>
+
+<script>
+    const buttons = document.querySelectorAll<HTMLButtonElement>(".tab-button");
+
+    const panels = document.querySelectorAll<HTMLElement>(".species-panel");
+
+    buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const selectedSpecies = button.dataset.species;
+
+            // Cacher tous les graphiques
+            panels.forEach((panel) => {
+                panel.classList.add("hidden");
+            });
+
+            // Afficher le graphique sélectionné
+            const selectedPanel = document.querySelector<HTMLElement>(
+                `[data-panel="${selectedSpecies}"]`,
+            );
+
+            selectedPanel?.classList.remove("hidden");
+
+            // Réinitialiser les boutons
+            buttons.forEach((btn) => {
+                btn.classList.remove("btn-primary");
+                btn.classList.add("btn-outline");
+            });
+
+            // Activer le bouton sélectionné
+            button.classList.remove("btn-outline");
+            button.classList.add("btn-primary");
+        });
+    });
+</script>

@@ -1,0 +1,35 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import penguins from "../../../assets/penguins.json";
+
+const islands = [...new Set(penguins.map((penguin) => penguin.island))];
+---
+
+<Layout>
+    <main class="min-h-screen bg-[#b0c4de] px-6 py-10">
+        <div class="max-w-5xl mx-auto">
+            <a href="/penguins/" class="font-semibold">
+                ← Retour aux Penguins
+            </a>
+
+            <h1 class="text-4xl font-bold mt-6 mb-3">Penguins par île</h1>
+
+            <p class="mb-8">Choisissez une île.</p>
+
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <div class="flex flex-wrap gap-3">
+                    {
+                        islands.map((island) => (
+                            <a
+                                href={`/penguins/island/${island}/`}
+                                class="btn btn-primary"
+                            >
+                                {island}
+                            </a>
+                        ))
+                    }
+                </div>
+            </div>
+        </div>
+    </main>
+</Layout>

@@ -1,0 +1,81 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import penguins from "../../../assets/penguins.json";
+import PlotFigure from "../../../components/PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+
+export function getStaticPaths() {
+    const sexes = [
+        ...new Set(
+            penguins
+                .filter((penguin) => penguin.sex != null)
+                .map((penguin) => penguin.sex as string),
+        ),
+    ];
+
+    return sexes.map((sex) => ({
+        params: {
+            sex: sex,
+        },
+    }));
+}
+
+const { sex } = Astro.params;
+
+const filteredPenguins = penguins.filter((penguin) => penguin.sex === sex);
+
+const validPenguins = filteredPenguins.filter(
+    (penguin) =>
+        penguin.culmen_length_mm != null && penguin.culmen_depth_mm != null,
+);
+
+const plotOptions = {
+    grid: true,
+
+    marks: [
+        Plot.dot(validPenguins, {
+            x: "culmen_length_mm",
+            y: "culmen_depth_mm",
+            fill: "species",
+            r: 5,
+            fillOpacity: 0.8,
+        }),
+    ],
+
+    x: {
+        label: "Longueur du bec (mm)",
+    },
+
+    y: {
+        label: "Profondeur du bec (mm)",
+    },
+
+    color: {
+        legend: true,
+    },
+
+    title: `Penguins - ${sex}`,
+};
+---
+
+<Layout>
+    <main class="min-h-screen bg-[#b0c4de] px-6 py-10">
+        <div class="max-w-5xl mx-auto">
+            <a href="/penguins/sex/" class="font-semibold">
+                ← Retour aux sexes
+            </a>
+
+            <h1 class="text-4xl font-bold mt-6 mb-3">
+                Sexe : {sex}
+            </h1>
+
+            <p class="mb-6">
+                {filteredPenguins.length} penguin(s)
+            </p>
+
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <PlotFigure options={plotOptions} />
+            </div>
+        </div>
+    </main>
+</Layout>
