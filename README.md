@@ -1,7 +1,6 @@
-- URL site WEB :
+- URL site WEB :https://elaborate-swan-283039.netlify.app/ 
 - URL Notebook Observable :
-- Nom :
-- Prénom :
+- Nom :HamdiRahma
 - Nom binome :
 - Prénom binome :
 
